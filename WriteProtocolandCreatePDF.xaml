@@ -1,0 +1,1070 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="WriteProtocolandCreatePDF" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:p="http://schemas.uipath.com/workflow/activities/word" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:str="clr-namespace:System.Text.RegularExpressions;assembly=System" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property Name="out_ProtocolPDFCopyFilePath" Type="OutArgument(x:String)" />
+    <x:Property Name="in_Config" Type="InArgument(scg:Dictionary(x:String, x:Object))" />
+    <x:Property Name="in_CaseID" Type="InArgument(x:String)" />
+    <x:Property Name="in_ProtocolDictionary" Type="InArgument(scg:Dictionary(x:String, x:String))" />
+  </x:Members>
+  <sap:VirtualizedContainerService.HintSize>2249,7258</sap:VirtualizedContainerService.HintSize>
+  <sap2010:WorkflowViewState.IdRef>ActivityBuilder_1</sap2010:WorkflowViewState.IdRef>
+  <TextExpression.NamespacesForImplementation>
+    <scg:List x:TypeArguments="x:String" Capacity="18">
+      <x:String>System</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Activities</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Diagnostics</x:String>
+      <x:String>System.Drawing</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Xml</x:String>
+      <x:String>System.Xml.Linq</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Net.Mail</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System.Text.RegularExpressions</x:String>
+    </scg:List>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="12">
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System.DataSetExtensions</AssemblyReference>
+      <AssemblyReference>System.Drawing</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+    </scg:List>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence sap2010:Annotation.AnnotationText="Writes a protocol from a dictionary and saves it as a PDF-file.&#xD;&#xA;&#xD;&#xA;Pre Condotion: N/A&#xD;&#xA;Post Condition: N/A" DisplayName="Write Protocol and Create a PDF" sap:VirtualizedContainerService.HintSize="2209,7178" sap2010:WorkflowViewState.IdRef="Sequence_23">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:String" Name="ProtocolTemplateFilePath" />
+      <Variable x:TypeArguments="x:String" Name="ProtocolCopyFilePath" />
+      <Variable x:TypeArguments="x:String" Name="TextToReplacePlaceholder" />
+      <Variable x:TypeArguments="x:String" Name="Environment" />
+      <Variable x:TypeArguments="x:String" Name="TempFilesPath" />
+      <Variable x:TypeArguments="x:Int32" Default="1" Name="Page" />
+      <Variable x:TypeArguments="x:String" Name="WindowFilename" />
+      <Variable x:TypeArguments="x:Int32" Name="TimeoutShort" />
+      <Variable x:TypeArguments="x:Int32" Name="TimeoutVeryShort" />
+      <Variable x:TypeArguments="x:Int32" Name="TimeoutMedium" />
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <ui:MultipleAssign DisplayName="Multiple Assign Variables" sap:VirtualizedContainerService.HintSize="2187,222" sap2010:WorkflowViewState.IdRef="MultipleAssign_1">
+      <ui:MultipleAssign.AssignOperations>
+        <scg:List x:TypeArguments="ui:AssignOperation" Capacity="32">
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_1">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[TextToReplacePlaceholder]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[in_Config("TextToReplaceEmptyPlaceholder").ToString]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_2">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:String">[TempFilesPath]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:String">[in_Config("TempFilesPath").ToString]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_3">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:Int32">[TimeoutShort]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:Int32">[int32.Parse(in_Config("TimeoutShort").ToString)]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_4">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:Int32">[TimeoutVeryShort]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:Int32">[int32.Parse(in_Config("TimeoutVeryShort").ToString)]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_5">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:Int32">[TimeoutMedium]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:Int32">[int32.Parse(in_Config("TimeoutMedium").ToString)]</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+        </scg:List>
+      </ui:MultipleAssign.AssignOperations>
+    </ui:MultipleAssign>
+    <Assign DisplayName="Assign Template Path" sap:VirtualizedContainerService.HintSize="2187,60" sap2010:WorkflowViewState.IdRef="Assign_1">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[ProtocolTemplateFilePath]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[in_Config("ProtocolFullFilePath").ToString]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign DisplayName="Assign Word Copy Path" sap:VirtualizedContainerService.HintSize="2187,60" sap2010:WorkflowViewState.IdRef="Assign_2">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[ProtocolCopyFilePath]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[Path.Combine(TempFilesPath, Path.GetFileNameWithoutExtension(ProtocolTemplateFilePath) + " - " + in_CaseID + Path.GetExtension(ProtocolTemplateFilePath))]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign DisplayName="Assign PDF Copy Path" sap:VirtualizedContainerService.HintSize="2187,60" sap2010:WorkflowViewState.IdRef="Assign_3">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[out_ProtocolPDFCopyFilePath]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[ProtocolCopyFilePath.Replace(Path.GetExtension(ProtocolCopyFilePath), ".pdf")]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <ui:RetryScope DisplayName="Retry Scope Creating Protocol" sap:VirtualizedContainerService.HintSize="2187,5962" sap2010:WorkflowViewState.IdRef="RetryScope_2" NumberOfRetries="3" RetryInterval="00:00:05">
+      <ui:RetryScope.ActivityBody>
+        <ActivityAction>
+          <Sequence sap:VirtualizedContainerService.HintSize="2165,5788" sap2010:WorkflowViewState.IdRef="Sequence_22">
+            <Sequence.Variables>
+              <Variable x:TypeArguments="x:Int32" Name="RetryCount" />
+            </Sequence.Variables>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <ui:CopyFile ContinueOnError="{x:Null}" Destination="[ProtocolCopyFilePath]" DisplayName="Create a File Copy With The Case ID" sap:VirtualizedContainerService.HintSize="2143,157" sap2010:WorkflowViewState.IdRef="CopyFile_1" Overwrite="True" Path="[ProtocolTemplateFilePath]" />
+            <Assign DisplayName="Assign WindowFilename" sap:VirtualizedContainerService.HintSize="2143,60" sap2010:WorkflowViewState.IdRef="Assign_4">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[WindowFilename]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[Path.GetFileNameWithoutExtension(ProtocolCopyFilePath)]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <TryCatch DisplayName="Try Catch Working in Word" sap:VirtualizedContainerService.HintSize="2143,5367" sap2010:WorkflowViewState.IdRef="TryCatch_11">
+              <TryCatch.Try>
+                <p:WordApplicationScope DisplayName="Word Application Scope For The Protocol Copy" FilePath="[ProtocolCopyFilePath]" sap:VirtualizedContainerService.HintSize="2105,5140" sap2010:WorkflowViewState.IdRef="WordApplicationScope_1">
+                  <p:WordApplicationScope.Body>
+                    <ActivityAction x:TypeArguments="ui:WordDocument">
+                      <ActivityAction.Argument>
+                        <DelegateInArgument x:TypeArguments="ui:WordDocument" Name="WordDocumentScope" />
+                      </ActivityAction.Argument>
+                      <Sequence DisplayName="Create PDF Protocol" sap:VirtualizedContainerService.HintSize="2071,5031" sap2010:WorkflowViewState.IdRef="Sequence_19">
+                        <Sequence.Variables>
+                          <Variable x:TypeArguments="x:String" Name="WordDocumentText" />
+                          <Variable x:TypeArguments="scg:IEnumerable(str:Match)" Name="PlaceHoldersLeft" />
+                          <Variable x:TypeArguments="x:String" Default="\[\w*\]" Name="PlaceholderRegEx" />
+                          <Variable x:TypeArguments="x:Int32" Name="index" />
+                        </Sequence.Variables>
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                        <TryCatch DisplayName="Try Catch" sap:VirtualizedContainerService.HintSize="2029,295" sap2010:WorkflowViewState.IdRef="TryCatch_1">
+                          <TryCatch.Try>
+                            <ui:Activate DelayBefore="{x:Null}" DelayMS="{x:Null}" DisplayName="Activate Word" sap:VirtualizedContainerService.HintSize="334,68" sap2010:WorkflowViewState.IdRef="Activate_1">
+                              <ui:Activate.Target>
+                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="0880a127-5e83-4152-8df8-b0c4900bc692" Selector="&lt;wnd app='winword.exe' title='*{{WindowFilename}}*' /&gt;" TimeoutMS="[TimeoutMedium]" WaitForReady="INTERACTIVE" />
+                              </ui:Activate.Target>
+                            </ui:Activate>
+                          </TryCatch.Try>
+                          <TryCatch.Catches>
+                            <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="404,21" sap2010:WorkflowViewState.IdRef="Catch`1_1">
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                              <ActivityAction x:TypeArguments="s:Exception">
+                                <ActivityAction.Argument>
+                                  <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+                                </ActivityAction.Argument>
+                                <ui:LogMessage DisplayName="Log Message Activate" sap:VirtualizedContainerService.HintSize="334,91" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Trace" Message="[&quot;Failed to activate word due to &quot; + exception.Message + &quot; at source &quot; + exception.Source]" />
+                              </ActivityAction>
+                            </Catch>
+                          </TryCatch.Catches>
+                        </TryCatch>
+                        <ui:ForEach x:TypeArguments="scg:KeyValuePair(x:String, x:String)" CurrentIndex="[index]" DisplayName="For Each Pair In Protocol Dictionary" sap:VirtualizedContainerService.HintSize="2029,1868" sap2010:WorkflowViewState.IdRef="ForEach`1_2" Values="[in_ProtocolDictionary]">
+                          <ui:ForEach.Body>
+                            <ActivityAction x:TypeArguments="scg:KeyValuePair(x:String, x:String)">
+                              <ActivityAction.Argument>
+                                <DelegateInArgument x:TypeArguments="scg:KeyValuePair(x:String, x:String)" Name="Pair" />
+                              </ActivityAction.Argument>
+                              <TryCatch DisplayName="Try Catch Write Protocol Value" sap:VirtualizedContainerService.HintSize="1793,1735" sap2010:WorkflowViewState.IdRef="TryCatch_5">
+                                <TryCatch.Try>
+                                  <Sequence DisplayName="Move Down And Replace Placeholder" sap:VirtualizedContainerService.HintSize="1775,1508" sap2010:WorkflowViewState.IdRef="Sequence_16">
+                                    <Sequence.Variables>
+                                      <Variable x:TypeArguments="x:String" Name="ValueToWrite" />
+                                    </Sequence.Variables>
+                                    <sap:WorkflowViewStateService.ViewState>
+                                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                      </scg:Dictionary>
+                                    </sap:WorkflowViewStateService.ViewState>
+                                    <If Condition="[index Mod 20 = 0 AND index &gt; 0]" DisplayName="If Index Can Dide Evenly With 20" sap:VirtualizedContainerService.HintSize="1753,528" sap2010:WorkflowViewState.IdRef="If_1">
+                                      <If.Then>
+                                        <TryCatch DisplayName="Try Catch PGDOWN" sap:VirtualizedContainerService.HintSize="418,381" sap2010:WorkflowViewState.IdRef="TryCatch_2">
+                                          <TryCatch.Try>
+                                            <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DisplayName="Send PGDOWN Hotkey 'WINWORD.EXE Skolskjuts'" sap:VirtualizedContainerService.HintSize="314,154" sap2010:WorkflowViewState.IdRef="SendHotkey_1" Key="pgdn" KeyModifiers="None" SpecialKey="True">
+                                              <ui:SendHotkey.Target>
+                                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="95f9a857-9829-448f-b32d-d4d0f96f606b" InformativeScreenshot="e7d9f25aa287712589181f5a75875095" Selector="&lt;wnd app='winword.exe' title='*{{WindowFilename}}*' /&gt;" WaitForReady="INTERACTIVE">
+                                                  <ui:Target.TimeoutMS>
+                                                    <InArgument x:TypeArguments="x:Int32" />
+                                                  </ui:Target.TimeoutMS>
+                                                </ui:Target>
+                                              </ui:SendHotkey.Target>
+                                            </ui:SendHotkey>
+                                          </TryCatch.Try>
+                                          <TryCatch.Catches>
+                                            <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="404,21" sap2010:WorkflowViewState.IdRef="Catch`1_2">
+                                              <sap:WorkflowViewStateService.ViewState>
+                                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                  <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                                </scg:Dictionary>
+                                              </sap:WorkflowViewStateService.ViewState>
+                                              <ActivityAction x:TypeArguments="s:Exception">
+                                                <ActivityAction.Argument>
+                                                  <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+                                                </ActivityAction.Argument>
+                                                <ui:LogMessage DisplayName="Log Message PGDOWN" sap:VirtualizedContainerService.HintSize="314,91" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="Trace" Message="[&quot;Failed to press PGDOWN in word due to &quot; + exception.Message + &quot; at source &quot; + exception.Source]" />
+                                              </ActivityAction>
+                                            </Catch>
+                                          </TryCatch.Catches>
+                                        </TryCatch>
+                                      </If.Then>
+                                    </If>
+                                    <Assign DisplayName="Assign Value To Write And Replace Newline" sap:VirtualizedContainerService.HintSize="1753,60" sap2010:WorkflowViewState.IdRef="Assign_5">
+                                      <Assign.To>
+                                        <OutArgument x:TypeArguments="x:String">[ValueToWrite]</OutArgument>
+                                      </Assign.To>
+                                      <Assign.Value>
+                                        <InArgument x:TypeArguments="x:String">[System.Text.RegularExpressions.Regex.Replace(System.Text.RegularExpressions.Regex.Replace(Pair.Value.Replace(System.Environment.NewLine, "^p"), "\\n","^p"),"\n","^p")]</InArgument>
+                                      </Assign.Value>
+                                    </Assign>
+                                    <If Condition="[Not String.IsNullOrEmpty(ValueToWrite)]" DisplayName="If Value In Dictionary Is Not Empty" sap:VirtualizedContainerService.HintSize="1753,716" sap2010:WorkflowViewState.IdRef="If_12">
+                                      <If.Then>
+                                        <If Condition="[Not Pair.Key.ToLower.Contains(&quot;map&quot;) AND Not Pair.Key.ToLower.Contains(&quot;link&quot;)]" DisplayName="If The Value Isn't A Map" sap:VirtualizedContainerService.HintSize="1414,569" sap2010:WorkflowViewState.IdRef="If_11">
+                                          <If.Then>
+                                            <If Condition="[ValueToWrite.Length &gt; 255]" DisplayName="If Value &lt; 255 Chars Long" sap:VirtualizedContainerService.HintSize="903,368" sap2010:WorkflowViewState.IdRef="If_4">
+                                              <If.Then>
+                                                <DoWhile DisplayName="Do While There Is Still Text Left To Write" sap:VirtualizedContainerService.HintSize="464,221" sap2010:WorkflowViewState.IdRef="DoWhile_1">
+                                                  <DoWhile.Variables>
+                                                    <Variable x:TypeArguments="x:Int32" Default="0" Name="CharIndex" />
+                                                  </DoWhile.Variables>
+                                                  <DoWhile.Condition>[CharIndex &lt; ValueToWrite.Length]</DoWhile.Condition>
+                                                  <Sequence DisplayName="Write Long Protocol Value" sap:VirtualizedContainerService.HintSize="200,51" sap2010:WorkflowViewState.IdRef="Sequence_3">
+                                                    <Sequence.Variables>
+                                                      <Variable x:TypeArguments="x:String" Name="TempText" />
+                                                      <Variable x:TypeArguments="x:String" Name="ConcatedTempText" />
+                                                      <Variable x:TypeArguments="x:String" Name="variable1" />
+                                                      <Variable x:TypeArguments="x:Int32" Name="MaxLengthOfTextPart" />
+                                                    </Sequence.Variables>
+                                                    <sap:WorkflowViewStateService.ViewState>
+                                                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                        <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                                      </scg:Dictionary>
+                                                    </sap:WorkflowViewStateService.ViewState>
+                                                    <Assign DisplayName="Assign Max Length Of Text Part" sap:VirtualizedContainerService.HintSize="925,60" sap2010:WorkflowViewState.IdRef="Assign_6">
+                                                      <Assign.To>
+                                                        <OutArgument x:TypeArguments="x:Int32">[MaxLengthOfTextPart]</OutArgument>
+                                                      </Assign.To>
+                                                      <Assign.Value>
+                                                        <InArgument x:TypeArguments="x:Int32">[255 - Pair.Key.Length]</InArgument>
+                                                      </Assign.Value>
+                                                    </Assign>
+                                                    <If Condition="[CharIndex + MaxLengthOfTextPart &gt; ValueToWrite.Length]" DisplayName="If Last Text Part" sap:VirtualizedContainerService.HintSize="925,655" sap2010:WorkflowViewState.IdRef="If_3">
+                                                      <If.Then>
+                                                        <p:WordReplaceText Found="{x:Null}" DisplayName="Replace Key In Protocol With Value In Dictionary" sap:VirtualizedContainerService.HintSize="414,137" sap2010:WorkflowViewState.IdRef="WordReplaceText_1" Replace="[ValueToWrite.Substring(CharIndex, ValueToWrite.Length - CharIndex)]" Search="[Pair.Key]" />
+                                                      </If.Then>
+                                                      <If.Else>
+                                                        <Sequence DisplayName="Check Last Character And Write Part Text" sap:VirtualizedContainerService.HintSize="486,508" sap2010:WorkflowViewState.IdRef="Sequence_2">
+                                                          <sap:WorkflowViewStateService.ViewState>
+                                                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                            </scg:Dictionary>
+                                                          </sap:WorkflowViewStateService.ViewState>
+                                                          <If Condition="[ValueToWrite.Substring(CharIndex, MaxLengthOfTextPart).Substring(MaxLengthOfTextPart-1).Equals(&quot;^&quot;)]" DisplayName="If Last Character Is A ^" sap:VirtualizedContainerService.HintSize="464,207" sap2010:WorkflowViewState.IdRef="If_2">
+                                                            <If.Then>
+                                                              <Assign DisplayName="Subtract One From Max Length Of Text" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_7">
+                                                                <Assign.To>
+                                                                  <OutArgument x:TypeArguments="x:Int32">[MaxLengthOfTextPart]</OutArgument>
+                                                                </Assign.To>
+                                                                <Assign.Value>
+                                                                  <InArgument x:TypeArguments="x:Int32">[MaxLengthOfTextPart-1]</InArgument>
+                                                                </Assign.Value>
+                                                              </Assign>
+                                                            </If.Then>
+                                                          </If>
+                                                          <p:WordReplaceText Found="{x:Null}" DisplayName="Replace Key In Protocol With Value In Dictionary" sap:VirtualizedContainerService.HintSize="464,137" sap2010:WorkflowViewState.IdRef="WordReplaceText_2" Replace="[ValueToWrite.Substring(CharIndex, MaxLengthOfTextPart) + Pair.Key]" Search="[Pair.Key]" />
+                                                        </Sequence>
+                                                      </If.Else>
+                                                    </If>
+                                                    <Assign DisplayName="Add Max Length Of Text To CharIndex" sap:VirtualizedContainerService.HintSize="925,60" sap2010:WorkflowViewState.IdRef="Assign_8">
+                                                      <Assign.To>
+                                                        <OutArgument x:TypeArguments="x:Int32">[CharIndex]</OutArgument>
+                                                      </Assign.To>
+                                                      <Assign.Value>
+                                                        <InArgument x:TypeArguments="x:Int32">[CharIndex + MaxLengthOfTextPart]</InArgument>
+                                                      </Assign.Value>
+                                                    </Assign>
+                                                  </Sequence>
+                                                </DoWhile>
+                                              </If.Then>
+                                              <If.Else>
+                                                <p:WordReplaceText Found="{x:Null}" DisplayName="Replace Key In Protocol With Value In Dictionary" sap:VirtualizedContainerService.HintSize="414,137" sap2010:WorkflowViewState.IdRef="WordReplaceText_3" Replace="[ValueToWrite]" Search="[Pair.Key]" />
+                                              </If.Else>
+                                            </If>
+                                          </If.Then>
+                                          <If.Else>
+                                            <Sequence sap:VirtualizedContainerService.HintSize="486,422" sap2010:WorkflowViewState.IdRef="Sequence_15">
+                                              <sap:WorkflowViewStateService.ViewState>
+                                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                </scg:Dictionary>
+                                              </sap:WorkflowViewStateService.ViewState>
+                                              <If Condition="[Pair.Key.ToLower.Contains(&quot;map&quot;)]" DisplayName="If Value Is A Map Image" sap:VirtualizedContainerService.HintSize="464,207" sap2010:WorkflowViewState.IdRef="If_7">
+                                                <If.Then>
+                                                  <Sequence DisplayName="Next Page And Import Image" sap:VirtualizedContainerService.HintSize="200,51" sap2010:WorkflowViewState.IdRef="Sequence_5">
+                                                    <Sequence.Variables>
+                                                      <Variable x:TypeArguments="x:Boolean" Name="FileExists" />
+                                                    </Sequence.Variables>
+                                                    <sap:WorkflowViewStateService.ViewState>
+                                                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                        <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                                      </scg:Dictionary>
+                                                    </sap:WorkflowViewStateService.ViewState>
+                                                    <TryCatch DisplayName="Try Catch PGDOWN" sap:VirtualizedContainerService.HintSize="713,667" sap2010:WorkflowViewState.IdRef="TryCatch_3">
+                                                      <TryCatch.Try>
+                                                        <Sequence DisplayName="PGDOWN x2" sap:VirtualizedContainerService.HintSize="376,440" sap2010:WorkflowViewState.IdRef="Sequence_4">
+                                                          <sap:WorkflowViewStateService.ViewState>
+                                                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                            </scg:Dictionary>
+                                                          </sap:WorkflowViewStateService.ViewState>
+                                                          <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DisplayName="Send PGDOWN Hotkey 'WINWORD.EXE Skolskjuts'" sap:VirtualizedContainerService.HintSize="334,154" sap2010:WorkflowViewState.IdRef="SendHotkey_2" Key="pgdn" KeyModifiers="None" SpecialKey="True">
+                                                            <ui:SendHotkey.Target>
+                                                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="95f9a857-9829-448f-b32d-d4d0f96f606b" InformativeScreenshot="e7d9f25aa287712589181f5a75875095" Selector="&lt;wnd app='winword.exe' title='*{{WindowFilename}}*' /&gt;" WaitForReady="INTERACTIVE">
+                                                                <ui:Target.TimeoutMS>
+                                                                  <InArgument x:TypeArguments="x:Int32" />
+                                                                </ui:Target.TimeoutMS>
+                                                              </ui:Target>
+                                                            </ui:SendHotkey.Target>
+                                                          </ui:SendHotkey>
+                                                          <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DisplayName="Send PGDOWN Hotkey 'WINWORD.EXE Skolskjuts'" sap:VirtualizedContainerService.HintSize="334,154" sap2010:WorkflowViewState.IdRef="SendHotkey_3" Key="pgdn" KeyModifiers="None" SpecialKey="True">
+                                                            <ui:SendHotkey.Target>
+                                                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="95f9a857-9829-448f-b32d-d4d0f96f606b" InformativeScreenshot="e7d9f25aa287712589181f5a75875095" Selector="&lt;wnd app='winword.exe' title='*{{WindowFilename}}*' /&gt;" WaitForReady="INTERACTIVE">
+                                                                <ui:Target.TimeoutMS>
+                                                                  <InArgument x:TypeArguments="x:Int32" />
+                                                                </ui:Target.TimeoutMS>
+                                                              </ui:Target>
+                                                            </ui:SendHotkey.Target>
+                                                          </ui:SendHotkey>
+                                                        </Sequence>
+                                                      </TryCatch.Try>
+                                                      <TryCatch.Catches>
+                                                        <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="404,21" sap2010:WorkflowViewState.IdRef="Catch`1_3">
+                                                          <sap:WorkflowViewStateService.ViewState>
+                                                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                              <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                                              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                                            </scg:Dictionary>
+                                                          </sap:WorkflowViewStateService.ViewState>
+                                                          <ActivityAction x:TypeArguments="s:Exception">
+                                                            <ActivityAction.Argument>
+                                                              <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+                                                            </ActivityAction.Argument>
+                                                            <ui:LogMessage DisplayName="Log Message PGDOWN" sap:VirtualizedContainerService.HintSize="334,91" sap2010:WorkflowViewState.IdRef="LogMessage_3" Level="Trace" Message="[&quot;Failed to press PGDOWN in word due to &quot; + exception.Message + &quot; at source &quot; + exception.Source]" />
+                                                          </ActivityAction>
+                                                        </Catch>
+                                                      </TryCatch.Catches>
+                                                    </TryCatch>
+                                                    <If Condition="[Not String.IsNullOrEmpty(ValueToWrite)]" DisplayName="If Value In Dictionary Is Not Empty" sap:VirtualizedContainerService.HintSize="713,239" sap2010:WorkflowViewState.IdRef="If_5">
+                                                      <If.Then>
+                                                        <ui:PathExists DisplayName="Path Exists" Exists="[FileExists]" sap:VirtualizedContainerService.HintSize="334,89" sap2010:WorkflowViewState.IdRef="PathExists_1" Path="[ValueToWrite]" PathType="File" />
+                                                      </If.Then>
+                                                      <If.Else>
+                                                        <ui:LogMessage DisplayName="Log Message No Map Found" sap:VirtualizedContainerService.HintSize="334,91" sap2010:WorkflowViewState.IdRef="LogMessage_4" Level="Warn" Message="[&quot;No filepath to map &quot; + Pair.Key + &quot; was found&quot;]" />
+                                                      </If.Else>
+                                                    </If>
+                                                    <If Condition="[FileExists]" DisplayName="If File Exists" sap:VirtualizedContainerService.HintSize="713,285" sap2010:WorkflowViewState.IdRef="If_6">
+                                                      <If.Then>
+                                                        <p:WordReplacePicture DisplayName="Replace Placeholder Map With Real Map" sap:VirtualizedContainerService.HintSize="434,137" sap2010:WorkflowViewState.IdRef="WordReplacePicture_1" PictureAltText="[Pair.Key]" PicturePath="[ValueToWrite]" />
+                                                      </If.Then>
+                                                    </If>
+                                                  </Sequence>
+                                                </If.Then>
+                                                <If.Else>
+                                                  <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="200,51" sap2010:WorkflowViewState.IdRef="CommentOut_1">
+                                                    <ui:CommentOut.Body>
+                                                      <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="494,779" sap2010:WorkflowViewState.IdRef="Sequence_7">
+                                                        <sap:WorkflowViewStateService.ViewState>
+                                                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                          </scg:Dictionary>
+                                                        </sap:WorkflowViewStateService.ViewState>
+                                                        <Sequence DisplayName="Move To End Of Protocol And Write Appendix" sap:VirtualizedContainerService.HintSize="472,655" sap2010:WorkflowViewState.IdRef="Sequence_6">
+                                                          <Sequence.Variables>
+                                                            <Variable x:TypeArguments="scg:List(x:String)" Name="SplittedAppendix" />
+                                                          </Sequence.Variables>
+                                                          <sap:WorkflowViewStateService.ViewState>
+                                                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                            </scg:Dictionary>
+                                                          </sap:WorkflowViewStateService.ViewState>
+                                                          <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DisplayName="Send CTRL+END Hotkey 'WINWORD.EXE Skolskjuts'" sap:VirtualizedContainerService.HintSize="430,154" sap2010:WorkflowViewState.IdRef="SendHotkey_4" Key="end" KeyModifiers="Ctrl" SpecialKey="True">
+                                                            <ui:SendHotkey.Target>
+                                                              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="95f9a857-9829-448f-b32d-d4d0f96f606b" InformativeScreenshot="e7d9f25aa287712589181f5a75875095" Selector="&lt;wnd app='winword.exe' cls='OpusApp' title='Skolskjuts Protokoll*.docx - Word' /&gt;&#xA;" WaitForReady="INTERACTIVE">
+                                                                <ui:Target.TimeoutMS>
+                                                                  <InArgument x:TypeArguments="x:Int32" />
+                                                                </ui:Target.TimeoutMS>
+                                                              </ui:Target>
+                                                            </ui:SendHotkey.Target>
+                                                          </ui:SendHotkey>
+                                                          <Assign DisplayName="Split Appendix" sap:VirtualizedContainerService.HintSize="430,60" sap2010:WorkflowViewState.IdRef="Assign_9">
+                                                            <Assign.To>
+                                                              <OutArgument x:TypeArguments="scg:List(x:String)">[SplittedAppendix]</OutArgument>
+                                                            </Assign.To>
+                                                            <Assign.Value>
+                                                              <InArgument x:TypeArguments="scg:List(x:String)">[ValueToWrite.Split({"^p"}, StringSplitOptions.None).ToList]</InArgument>
+                                                            </Assign.Value>
+                                                          </Assign>
+                                                          <ui:ForEach x:TypeArguments="x:String" CurrentIndex="{x:Null}" DisplayName="For Each Row in SplittedAppendix" sap:VirtualizedContainerService.HintSize="430,237" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[SplittedAppendix]">
+                                                            <ui:ForEach.Body>
+                                                              <ActivityAction x:TypeArguments="x:String">
+                                                                <ActivityAction.Argument>
+                                                                  <DelegateInArgument x:TypeArguments="x:String" Name="TextString" />
+                                                                </ActivityAction.Argument>
+                                                                <p:WordAppendText DisplayName="Append Text" sap:VirtualizedContainerService.HintSize="414,104" sap2010:WorkflowViewState.IdRef="WordAppendText_1" NewLine="False" Text="[TextString + &quot;^p&quot;]" />
+                                                              </ActivityAction>
+                                                            </ui:ForEach.Body>
+                                                          </ui:ForEach>
+                                                        </Sequence>
+                                                      </Sequence>
+                                                    </ui:CommentOut.Body>
+                                                    <sap:WorkflowViewStateService.ViewState>
+                                                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                        <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                                      </scg:Dictionary>
+                                                    </sap:WorkflowViewStateService.ViewState>
+                                                  </ui:CommentOut>
+                                                </If.Else>
+                                              </If>
+                                              <If Condition="[Pair.Key.ToLower.Contains(&quot;link&quot;) AND Pair.Value.Split({&quot;;&quot;}, StringSplitOptions.RemoveEmptyEntries).ToList.Count &gt; 1]" DisplayName="If Value Is A Link" sap:VirtualizedContainerService.HintSize="464,51" sap2010:WorkflowViewState.IdRef="If_10">
+                                                <sap:WorkflowViewStateService.ViewState>
+                                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                    <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                                    <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                                  </scg:Dictionary>
+                                                </sap:WorkflowViewStateService.ViewState>
+                                                <If.Then>
+                                                  <TryCatch DisplayName="Try Catch Creating Link" sap:VirtualizedContainerService.HintSize="562,5236" sap2010:WorkflowViewState.IdRef="TryCatch_4">
+                                                    <TryCatch.Try>
+                                                      <Sequence DisplayName="Create Link" sap:VirtualizedContainerService.HintSize="544,5009" sap2010:WorkflowViewState.IdRef="Sequence_13">
+                                                        <sap:WorkflowViewStateService.ViewState>
+                                                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                          </scg:Dictionary>
+                                                        </sap:WorkflowViewStateService.ViewState>
+                                                        <ui:LogMessage DisplayName="Log Message Link Title" sap:VirtualizedContainerService.HintSize="522,91" sap2010:WorkflowViewState.IdRef="LogMessage_5" Level="Trace" Message="[&quot;Switching placeholder with link name&quot;]" />
+                                                        <ui:Activate DelayBefore="{x:Null}" DelayMS="{x:Null}" DisplayName="Activate 'WINWORD.EXE'" sap:VirtualizedContainerService.HintSize="522,106" sap2010:WorkflowViewState.IdRef="Activate_2">
+                                                          <ui:Activate.Target>
+                                                            <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="4980bdfa-537b-449d-b4be-64d4c6a7fca2" InformativeScreenshot="82ee3c269832e065eac3eed804848a42" Selector="&lt;wnd app='winword.exe' title='*{{WindowFilename}}*' /&gt;" WaitForReady="INTERACTIVE">
+                                                              <ui:Target.TimeoutMS>
+                                                                <InArgument x:TypeArguments="x:Int32" />
+                                                              </ui:Target.TimeoutMS>
+                                                            </ui:Target>
+                                                          </ui:Activate.Target>
+                                                        </ui:Activate>
+                                                        <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SpecialKey="{x:Null}" Activate="True" DisplayName="Send CTRL+H Hotkey" sap:VirtualizedContainerService.HintSize="522,116" sap2010:WorkflowViewState.IdRef="SendHotkey_5" Key="h" KeyModifiers="Ctrl" SendWindowMessages="False">
+                                                          <ui:SendHotkey.Target>
+                                                            <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="5db9c1f7-76ea-4ea7-a961-541a71ff2ced" Selector="&lt;wnd app='winword.exe' title='*{{WindowFilename}}*' /&gt;" WaitForReady="INTERACTIVE">
+                                                              <ui:Target.TimeoutMS>
+                                                                <InArgument x:TypeArguments="x:Int32" />
+                                                              </ui:Target.TimeoutMS>
+                                                            </ui:Target>
+                                                          </ui:SendHotkey.Target>
+                                                        </ui:SendHotkey>
+                                                        <ui:OnUiElementAppear ContinueOnError="{x:Null}" FoundElement="{x:Null}" WaitActive="{x:Null}" WaitVisible="{x:Null}" DisplayName="On Element Appear 'WINWORD.EXE Sök'" sap:VirtualizedContainerService.HintSize="522,4452" sap2010:WorkflowViewState.IdRef="OnUiElementAppear_2" RepeatForever="False">
+                                                          <ui:OnUiElementAppear.Body>
+                                                            <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="508,4276" sap2010:WorkflowViewState.IdRef="Sequence_12">
+                                                              <Sequence.Variables>
+                                                                <Variable x:TypeArguments="x:Boolean" Name="ContinueWindowExists" />
+                                                                <Variable x:TypeArguments="x:Boolean" Name="ResultDialogExists" />
+                                                              </Sequence.Variables>
+                                                              <sap:WorkflowViewStateService.ViewState>
+                                                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                                                </scg:Dictionary>
+                                                              </sap:WorkflowViewStateService.ViewState>
+                                                              <ui:TypeInto AlterIfDisabled="{x:Null}" ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DisplayName="Type Into 'Search For'" sap:VirtualizedContainerService.HintSize="486,134" sap2010:WorkflowViewState.IdRef="TypeInto_1" SimulateType="True" Text="[Pair.Key]">
+                                                                <ui:TypeInto.Target>
+                                                                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="9d920ba9-1bdb-4346-8bd4-10cadd23de7f" InformativeScreenshot="1dd1eb537474431234b7991443da6d08" Selector="&lt;wnd app='winword.exe' title='Sök och ersätt' /&gt;&#xA;&lt;ctrl name='Sök efter:' role='text' /&gt;&#xA;&lt;nav up='1' /&gt;&#xA;&lt;wnd cls='RichEdit20W' ctrlid='1024' /&gt;&#xA;" WaitForReady="INTERACTIVE">
+                                                                    <ui:Target.TimeoutMS>
+                                                                      <InArgument x:TypeArguments="x:Int32" />
+                                                                    </ui:Target.TimeoutMS>
+                                                                  </ui:Target>
+                                                                </ui:TypeInto.Target>
+                                                              </ui:TypeInto>
+                                                              <ui:TypeInto AlterIfDisabled="{x:Null}" ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DisplayName="Type Into 'Replace With'" sap:VirtualizedContainerService.HintSize="486,134" sap2010:WorkflowViewState.IdRef="TypeInto_2" SimulateType="True" Text="[Pair.Value.Split({&quot;;&quot;}, StringSplitOptions.None).First]">
+                                                                <ui:TypeInto.Target>
+                                                                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="9d920ba9-1bdb-4346-8bd4-10cadd23de7f" InformativeScreenshot="fe088f3ae614c294ad35961020d10e47" Selector="&lt;wnd app='winword.exe' title='Sök och ersätt' /&gt;&#xA;&lt;ctrl name='Ersätt med:' role='text' /&gt;&#xA;&lt;nav up='1' /&gt;&#xA;&lt;wnd cls='RichEdit20W' ctrlid='1026' /&gt;&#xA;" WaitForReady="INTERACTIVE">
+                                                                    <ui:Target.TimeoutMS>
+                                                                      <InArgument x:TypeArguments="x:Int32" />
+                                                                    </ui:Target.TimeoutMS>
+                                                                  </ui:Target>
+                                                                </ui:TypeInto.Target>
+                                                              </ui:TypeInto>
+                                                              <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DelayBefore="1000" DisplayName="Send Enter Hotkey" sap:VirtualizedContainerService.HintSize="486,154" sap2010:WorkflowViewState.IdRef="SendHotkey_6" Key="a" KeyModifiers="Alt" SpecialKey="False">
+                                                                <ui:SendHotkey.Target>
+                                                                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="5db9c1f7-76ea-4ea7-a961-541a71ff2ced" InformativeScreenshot="86c8533c456e06bfbdeca5aa833624ab" Selector="&lt;wnd app='winword.exe' title='Sök och ersätt' /&gt;" WaitForReady="INTERACTIVE">
+                                                                    <ui:Target.TimeoutMS>
+                                                                      <InArgument x:TypeArguments="x:Int32" />
+                                                                    </ui:Target.TimeoutMS>
+                                                                  </ui:Target>
+                                                                </ui:SendHotkey.Target>
+                                                              </ui:SendHotkey>
+                                                              <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="486,308" sap2010:WorkflowViewState.IdRef="CommentOut_2">
+                                                                <ui:CommentOut.Body>
+                                                                  <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="336,230" sap2010:WorkflowViewState.IdRef="Sequence_8">
+                                                                    <sap:WorkflowViewStateService.ViewState>
+                                                                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                                      </scg:Dictionary>
+                                                                    </sap:WorkflowViewStateService.ViewState>
+                                                                    <ui:Click AlterIfDisabled="{x:Null}" DelayBefore="{x:Null}" DelayMS="{x:Null}" SendWindowMessages="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click 'push button  Ersätt alla'" sap:VirtualizedContainerService.HintSize="314,106" sap2010:WorkflowViewState.IdRef="Click_1" KeyModifiers="None" MouseButton="BTN_LEFT" SimulateClick="True">
+                                                                      <ui:Click.CursorPosition>
+                                                                        <ui:CursorPosition Position="Center">
+                                                                          <ui:CursorPosition.OffsetX>
+                                                                            <InArgument x:TypeArguments="x:Int32" />
+                                                                          </ui:CursorPosition.OffsetX>
+                                                                          <ui:CursorPosition.OffsetY>
+                                                                            <InArgument x:TypeArguments="x:Int32" />
+                                                                          </ui:CursorPosition.OffsetY>
+                                                                        </ui:CursorPosition>
+                                                                      </ui:Click.CursorPosition>
+                                                                      <ui:Click.Target>
+                                                                        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="c2899351-66e3-49d2-b871-656efd38f5dd" InformativeScreenshot="23a54d01d1d1a0d0aa6b45a5a701b4b5" Selector="&lt;wnd app='winword.exe' title='Sök och ersätt' /&gt;&lt;ctrl name='Ersätt alla' role='push button' /&gt;" WaitForReady="INTERACTIVE">
+                                                                          <ui:Target.TimeoutMS>
+                                                                            <InArgument x:TypeArguments="x:Int32" />
+                                                                          </ui:Target.TimeoutMS>
+                                                                        </ui:Target>
+                                                                      </ui:Click.Target>
+                                                                    </ui:Click>
+                                                                  </Sequence>
+                                                                </ui:CommentOut.Body>
+                                                              </ui:CommentOut>
+                                                              <ui:WaitUiElementAppear FoundElement="{x:Null}" WaitActive="{x:Null}" WaitVisible="{x:Null}" DisplayName="Find Element" sap:VirtualizedContainerService.HintSize="486,68" sap2010:WorkflowViewState.IdRef="WaitUiElementAppear_1">
+                                                                <ui:WaitUiElementAppear.Target>
+                                                                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="efbbd6d1-e211-4c10-89b3-9ff181f85ae9" Selector="&lt;wnd app='winword.exe' cls='#32770' title='Microsoft Word' /&gt;&#xA;" TimeoutMS="[TimeoutVeryShort]" WaitForReady="INTERACTIVE" />
+                                                                </ui:WaitUiElementAppear.Target>
+                                                              </ui:WaitUiElementAppear>
+                                                              <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" Activate="True" DelayBefore="1000" DisplayName="Send Enter Hotkey" sap:VirtualizedContainerService.HintSize="486,154" sap2010:WorkflowViewState.IdRef="SendHotkey_7" Key="enter" KeyModifiers="None" SendWindowMessages="True" SpecialKey="True">
+                                                                <ui:SendHotkey.Target>
+                                                                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="5db9c1f7-76ea-4ea7-a961-541a71ff2ced" InformativeScreenshot="00ef1fd42d9b5e0ebe31e3fc2a9ce3da" Selector="&lt;wnd app='winword.exe' cls='#32770' title='Microsoft Word' /&gt;" WaitForReady="INTERACTIVE">
+                                                                    <ui:Target.TimeoutMS>
+                                                                      <InArgument x:TypeArguments="x:Int32" />
+                                                                    </ui:Target.TimeoutMS>
+                                                                  </ui:Target>
+                                                                </ui:SendHotkey.Target>
+                                                              </ui:SendHotkey>
+                                                              <ui:Click AlterIfDisabled="{x:Null}" DelayBefore="{x:Null}" DelayMS="{x:Null}" SendWindowMessages="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click 'page tab  Sök'" sap:VirtualizedContainerService.HintSize="486,106" sap2010:WorkflowViewState.IdRef="Click_2" KeyModifiers="None" MouseButton="BTN_LEFT" SimulateClick="True">
+                                                                <ui:Click.CursorPosition>
+                                                                  <ui:CursorPosition Position="Center">
+                                                                    <ui:CursorPosition.OffsetX>
+                                                                      <InArgument x:TypeArguments="x:Int32" />
+                                                                    </ui:CursorPosition.OffsetX>
+                                                                    <ui:CursorPosition.OffsetY>
+                                                                      <InArgument x:TypeArguments="x:Int32" />
+                                                                    </ui:CursorPosition.OffsetY>
+                                                                  </ui:CursorPosition>
+                                                                </ui:Click.CursorPosition>
+                                                                <ui:Click.Target>
+                                                                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="f0c4609c-26db-46d1-acd2-8b0512995219" InformativeScreenshot="c0ad0a528e9241356cd03a012c15db2c" Selector="&lt;wnd app='winword.exe' title='Sök och ersätt' /&gt;&lt;ctrl name='Sök' role='page tab' /&gt;" WaitForReady="INTERACTIVE">
+                                                                    <ui:Target.TimeoutMS>
+                                                                      <InArgument x:TypeArguments="x:Int32" />
+                                                                    </ui:Target.TimeoutMS>
+                                                                  </ui:Target>
+                                                                </ui:Click.Target>
+                                                              </ui:Click>
+                                                              <ui:TypeInto AlterIfDisabled="{x:Null}" ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DisplayName="Type Into 'Search For'" sap:VirtualizedContainerService.HintSize="486,134" sap2010:WorkflowViewState.IdRef="TypeInto_3" SimulateType="True" Text="[Pair.Value.Split({&quot;;&quot;}, StringSplitOptions.None).First]">
+                                                                <ui:TypeInto.Target>
+                                                                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="9d920ba9-1bdb-4346-8bd4-10cadd23de7f" InformativeScreenshot="1dd1eb537474431234b7991443da6d08" Selector="&lt;wnd app='winword.exe' title='Sök och ersätt' /&gt;&lt;ctrl name='Sök efter:' role='text' /&gt;&lt;nav up='1' /&gt;&lt;wnd cls='RichEdit20W' ctrlid='1024' /&gt;" WaitForReady="INTERACTIVE">
+                                                                    <ui:Target.TimeoutMS>
+                                                                      <InArgument x:TypeArguments="x:Int32" />
+                                                                    </ui:Target.TimeoutMS>
+                                                                  </ui:Target>
+                                                                </ui:TypeInto.Target>
+                                                              </ui:TypeInto>
+                                                              <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" Activate="False" DelayBefore="1000" DisplayName="Send ALT+N Hotkey" sap:VirtualizedContainerService.HintSize="486,154" sap2010:WorkflowViewState.IdRef="SendHotkey_8" Key="n" KeyModifiers="Alt" SendWindowMessages="True" SpecialKey="False">
+                                                                <ui:SendHotkey.Target>
+                                                                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="5db9c1f7-76ea-4ea7-a961-541a71ff2ced" InformativeScreenshot="2ef7b4f77821550488ee3bee76953bf2" Selector="&lt;wnd app='winword.exe' title='Sök och ersätt' /&gt;" TimeoutMS="[TimeoutVeryShort]" WaitForReady="NONE" />
+                                                                </ui:SendHotkey.Target>
+                                                              </ui:SendHotkey>
+                                                              <Sequence sap:VirtualizedContainerService.HintSize="486,571" sap2010:WorkflowViewState.IdRef="Sequence_9">
+                                                                <sap:WorkflowViewStateService.ViewState>
+                                                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                                    <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                                                  </scg:Dictionary>
+                                                                </sap:WorkflowViewStateService.ViewState>
+                                                                <ui:UiElementExists DisplayName="Element Exists 'Static'" Exists="[ResultDialogExists]" sap:VirtualizedContainerService.HintSize="464,106" sap2010:WorkflowViewState.IdRef="UiElementExists_1">
+                                                                  <ui:UiElementExists.Target>
+                                                                    <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="5a7024bc-ee51-470e-b654-65f72f0943d1" InformativeScreenshot="dd11bf376f654eb5733a70eb00444fdc" Selector="&lt;wnd app='winword.exe' cls='#32770' title='Microsoft Word' /&gt;" TimeoutMS="3000" WaitForReady="INTERACTIVE" />
+                                                                  </ui:UiElementExists.Target>
+                                                                </ui:UiElementExists>
+                                                                <If Condition="[ResultDialogExists]" DisplayName="If Result Dialog Exists " sap:VirtualizedContainerService.HintSize="464,301" sap2010:WorkflowViewState.IdRef="If_8">
+                                                                  <If.Then>
+                                                                    <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" Activate="True" DelayBefore="1000" DisplayName="Send ESC Hotkey" sap:VirtualizedContainerService.HintSize="314,154" sap2010:WorkflowViewState.IdRef="SendHotkey_9" Key="esc" KeyModifiers="None" SendWindowMessages="True" SpecialKey="True">
+                                                                      <ui:SendHotkey.Target>
+                                                                        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="5db9c1f7-76ea-4ea7-a961-541a71ff2ced" InformativeScreenshot="fa9053cded34b53cadd3ec8fe197c8cd" Selector="&lt;wnd app='winword.exe' cls='#32770' title='Microsoft Word' /&gt;" TimeoutMS="[TimeoutVeryShort]" WaitForReady="NONE" />
+                                                                      </ui:SendHotkey.Target>
+                                                                    </ui:SendHotkey>
+                                                                  </If.Then>
+                                                                </If>
+                                                              </Sequence>
+                                                              <ui:CloseWindow TimeoutMS="{x:Null}" UseWindow="{x:Null}" DisplayName="Close Window 'WINWORD.EXE Sök'" sap:VirtualizedContainerService.HintSize="486,106" sap2010:WorkflowViewState.IdRef="CloseWindow_1" InformativeScreenshot="b76b5d06123bd06741b24c1c87bc638c" Selector="&lt;wnd app='winword.exe' title='Sök och ersätt' /&gt;" WaitForReady="INTERACTIVE" />
+                                                              <ui:WaitUiElementVanish WaitNotActive="{x:Null}" WaitNotVisible="{x:Null}" DisplayName="Wait Element Vanish 'WINWORD.EXE  Hyperlänk'" sap:VirtualizedContainerService.HintSize="486,106" sap2010:WorkflowViewState.IdRef="WaitUiElementVanish_1">
+                                                                <ui:WaitUiElementVanish.Target>
+                                                                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="cd4a14f1-ef0c-40f7-bc01-d163b4600549" InformativeScreenshot="8185e65405719fcb4e0b923788868b78" Selector="&lt;wnd app='winword.exe' title='Sök och ersätt' /&gt;" TimeoutMS="[TimeoutVeryShort]" WaitForReady="INTERACTIVE" />
+                                                                </ui:WaitUiElementVanish.Target>
+                                                              </ui:WaitUiElementVanish>
+                                                              <ui:RetryScope DisplayName="Retry Scope Create To Link" sap:VirtualizedContainerService.HintSize="486,1543" sap2010:WorkflowViewState.IdRef="RetryScope_1" NumberOfRetries="3" RetryInterval="00:00:05">
+                                                                <ui:RetryScope.ActivityBody>
+                                                                  <ActivityAction>
+                                                                    <Sequence DisplayName="Action" sap:VirtualizedContainerService.HintSize="436,1369" sap2010:WorkflowViewState.IdRef="Sequence_11">
+                                                                      <sap:WorkflowViewStateService.ViewState>
+                                                                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                                        </scg:Dictionary>
+                                                                      </sap:WorkflowViewStateService.ViewState>
+                                                                      <ui:LogMessage DisplayName="Log Message Add URL" sap:VirtualizedContainerService.HintSize="414,91" sap2010:WorkflowViewState.IdRef="LogMessage_6" Level="Trace" Message="[&quot;Adding URL to link title&quot;]" />
+                                                                      <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" Activate="True" DisplayName="Send ESC Hotkey" sap:VirtualizedContainerService.HintSize="414,154" sap2010:WorkflowViewState.IdRef="SendHotkey_10" Key="esc" KeyModifiers="None" SendWindowMessages="False" SpecialKey="True">
+                                                                        <ui:SendHotkey.Target>
+                                                                          <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="5db9c1f7-76ea-4ea7-a961-541a71ff2ced" InformativeScreenshot="cd81e36f9d2f0f39eb66518767adcc95" Selector="&lt;wnd app='winword.exe' title='*{{WindowFilename}}*' /&gt;" TimeoutMS="[TimeoutShort]" WaitForReady="INTERACTIVE" />
+                                                                        </ui:SendHotkey.Target>
+                                                                      </ui:SendHotkey>
+                                                                      <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SpecialKey="{x:Null}" Activate="True" DisplayName="Send CTRL+I Hotkey" sap:VirtualizedContainerService.HintSize="414,154" sap2010:WorkflowViewState.IdRef="SendHotkey_11" Key="i" KeyModifiers="Ctrl" SendWindowMessages="False">
+                                                                        <ui:SendHotkey.Target>
+                                                                          <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="5db9c1f7-76ea-4ea7-a961-541a71ff2ced" InformativeScreenshot="cd81e36f9d2f0f39eb66518767adcc95" Selector="&lt;wnd app='winword.exe' title='*{{WindowFilename}}*' /&gt;" TimeoutMS="[TimeoutShort]" WaitForReady="INTERACTIVE" />
+                                                                        </ui:SendHotkey.Target>
+                                                                      </ui:SendHotkey>
+                                                                      <ui:OnUiElementAppear ContinueOnError="{x:Null}" FoundElement="{x:Null}" WaitActive="{x:Null}" WaitVisible="{x:Null}" DisplayName="On Element Appear 'WINWORD.EXE  Hyperlänk'" sap:VirtualizedContainerService.HintSize="414,726" sap2010:WorkflowViewState.IdRef="OnUiElementAppear_1" RepeatForever="False">
+                                                                        <ui:OnUiElementAppear.Body>
+                                                                          <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="336,550" sap2010:WorkflowViewState.IdRef="Sequence_10">
+                                                                            <sap:WorkflowViewStateService.ViewState>
+                                                                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                                              </scg:Dictionary>
+                                                                            </sap:WorkflowViewStateService.ViewState>
+                                                                            <ui:TypeInto AlterIfDisabled="{x:Null}" ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DisplayName="Type Into 'Adress'" sap:VirtualizedContainerService.HintSize="314,134" sap2010:WorkflowViewState.IdRef="TypeInto_4" SimulateType="True" Text="[Pair.Value.Split({&quot;;&quot;}, StringSplitOptions.None).ToList.Item(1)]">
+                                                                              <ui:TypeInto.Target>
+                                                                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="9d920ba9-1bdb-4346-8bd4-10cadd23de7f" InformativeScreenshot="cb1c32429cf97eaa18342d085db3fc62" Selector="&lt;wnd app='winword.exe' title='Hyperlänk' /&gt;&lt;ctrl name='Adress:' role='text' /&gt;&lt;nav up='1' /&gt;&lt;wnd cls='RichEdit20W' ctrlid='69' /&gt;" WaitForReady="INTERACTIVE">
+                                                                                  <ui:Target.TimeoutMS>
+                                                                                    <InArgument x:TypeArguments="x:Int32" />
+                                                                                  </ui:Target.TimeoutMS>
+                                                                                </ui:Target>
+                                                                              </ui:TypeInto.Target>
+                                                                            </ui:TypeInto>
+                                                                            <ui:Click AlterIfDisabled="{x:Null}" DelayBefore="{x:Null}" DelayMS="{x:Null}" SendWindowMessages="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click 'push button  OK'" sap:VirtualizedContainerService.HintSize="314,106" sap2010:WorkflowViewState.IdRef="Click_3" KeyModifiers="None" MouseButton="BTN_LEFT" SimulateClick="True">
+                                                                              <ui:Click.CursorPosition>
+                                                                                <ui:CursorPosition Position="Center">
+                                                                                  <ui:CursorPosition.OffsetX>
+                                                                                    <InArgument x:TypeArguments="x:Int32" />
+                                                                                  </ui:CursorPosition.OffsetX>
+                                                                                  <ui:CursorPosition.OffsetY>
+                                                                                    <InArgument x:TypeArguments="x:Int32" />
+                                                                                  </ui:CursorPosition.OffsetY>
+                                                                                </ui:CursorPosition>
+                                                                              </ui:Click.CursorPosition>
+                                                                              <ui:Click.Target>
+                                                                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="8de3a4e7-eaaf-4dc9-b2db-77d21e9df14b" InformativeScreenshot="9e63f5255635c994f444ae975b31ff2e" Selector="&lt;wnd app='winword.exe' title='Hyperlänk' /&gt;&#xA;&lt;ctrl name='OK' role='push button' /&gt;&#xA;" WaitForReady="INTERACTIVE">
+                                                                                  <ui:Target.TimeoutMS>
+                                                                                    <InArgument x:TypeArguments="x:Int32" />
+                                                                                  </ui:Target.TimeoutMS>
+                                                                                </ui:Target>
+                                                                              </ui:Click.Target>
+                                                                            </ui:Click>
+                                                                            <ui:WaitUiElementVanish WaitNotActive="{x:Null}" WaitNotVisible="{x:Null}" DisplayName="Wait Element Vanish 'WINWORD.EXE  Hyperlänk'" sap:VirtualizedContainerService.HintSize="314,106" sap2010:WorkflowViewState.IdRef="WaitUiElementVanish_2">
+                                                                              <ui:WaitUiElementVanish.Target>
+                                                                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="cd4a14f1-ef0c-40f7-bc01-d163b4600549" InformativeScreenshot="b7a71fed3e2e69d268f269010d786796" Selector="&lt;wnd app='winword.exe' title='Hyperlänk' /&gt;" TimeoutMS="[TimeoutVeryShort]" WaitForReady="INTERACTIVE" />
+                                                                              </ui:WaitUiElementVanish.Target>
+                                                                            </ui:WaitUiElementVanish>
+                                                                          </Sequence>
+                                                                        </ui:OnUiElementAppear.Body>
+                                                                        <ui:OnUiElementAppear.Target>
+                                                                          <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="13d70912-8b31-4329-90f2-3c652115ebba" InformativeScreenshot="930688c1c763f19144ce0bf7eb7fe691" Selector="&lt;wnd app='winword.exe' title='Hyperlänk' /&gt;" TimeoutMS="[TimeoutShort]" WaitForReady="INTERACTIVE" />
+                                                                        </ui:OnUiElementAppear.Target>
+                                                                      </ui:OnUiElementAppear>
+                                                                    </Sequence>
+                                                                  </ActivityAction>
+                                                                </ui:RetryScope.ActivityBody>
+                                                                <ui:RetryScope.Condition>
+                                                                  <ActivityFunc x:TypeArguments="x:Boolean" />
+                                                                </ui:RetryScope.Condition>
+                                                                <sap:WorkflowViewStateService.ViewState>
+                                                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                                    <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                                                  </scg:Dictionary>
+                                                                </sap:WorkflowViewStateService.ViewState>
+                                                              </ui:RetryScope>
+                                                            </Sequence>
+                                                          </ui:OnUiElementAppear.Body>
+                                                          <ui:OnUiElementAppear.Target>
+                                                            <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="196861c0-c559-4f33-bf68-b6c737a7f54b" InformativeScreenshot="678b911130a862625f26f16425dc96f5" Selector="&lt;wnd app='winword.exe' title='Sök och ersätt' /&gt;&#xA;" TimeoutMS="[TimeoutShort]" WaitForReady="INTERACTIVE" />
+                                                          </ui:OnUiElementAppear.Target>
+                                                        </ui:OnUiElementAppear>
+                                                      </Sequence>
+                                                    </TryCatch.Try>
+                                                    <TryCatch.Catches>
+                                                      <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="548,21" sap2010:WorkflowViewState.IdRef="Catch`1_4">
+                                                        <sap:WorkflowViewStateService.ViewState>
+                                                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                                            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                                          </scg:Dictionary>
+                                                        </sap:WorkflowViewStateService.ViewState>
+                                                        <ActivityAction x:TypeArguments="s:Exception">
+                                                          <ActivityAction.Argument>
+                                                            <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+                                                          </ActivityAction.Argument>
+                                                          <Sequence sap:VirtualizedContainerService.HintSize="486,657" sap2010:WorkflowViewState.IdRef="Sequence_14">
+                                                            <sap:WorkflowViewStateService.ViewState>
+                                                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                                              </scg:Dictionary>
+                                                            </sap:WorkflowViewStateService.ViewState>
+                                                            <ui:LogMessage DisplayName="Log Message Error" sap:VirtualizedContainerService.HintSize="464,91" sap2010:WorkflowViewState.IdRef="LogMessage_7" Level="Warn" Message="[&quot;Exception while creating link in word due to &quot; + exception.Message + &quot; at source &quot; + exception.Source]" />
+                                                            <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" Activate="False" DisplayName="Send ESC Hotkey" sap:VirtualizedContainerService.HintSize="464,154" sap2010:WorkflowViewState.IdRef="SendHotkey_12" Key="esc" KeyModifiers="None" SendWindowMessages="False" SpecialKey="True">
+                                                              <ui:SendHotkey.Target>
+                                                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="5db9c1f7-76ea-4ea7-a961-541a71ff2ced" InformativeScreenshot="cd81e36f9d2f0f39eb66518767adcc95" Selector="&lt;wnd app='winword.exe' title='*{{WindowFilename}}*' /&gt;" TimeoutMS="[TimeoutShort]" WaitForReady="INTERACTIVE" />
+                                                              </ui:SendHotkey.Target>
+                                                            </ui:SendHotkey>
+                                                            <If Condition="[RetryCount &lt;= 3]" DisplayName="If Retries Left" sap:VirtualizedContainerService.HintSize="464,208" sap2010:WorkflowViewState.IdRef="If_9">
+                                                              <If.Then>
+                                                                <Rethrow sap:VirtualizedContainerService.HintSize="200,22" sap2010:WorkflowViewState.IdRef="Rethrow_1" />
+                                                              </If.Then>
+                                                            </If>
+                                                          </Sequence>
+                                                        </ActivityAction>
+                                                      </Catch>
+                                                    </TryCatch.Catches>
+                                                    <TryCatch.Finally>
+                                                      <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" Activate="True" DisplayName="Send ESC Hotkey" sap:VirtualizedContainerService.HintSize="314,154" sap2010:WorkflowViewState.IdRef="SendHotkey_13" Key="esc" KeyModifiers="None" SendWindowMessages="False" SpecialKey="True">
+                                                        <ui:SendHotkey.Target>
+                                                          <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="5db9c1f7-76ea-4ea7-a961-541a71ff2ced" InformativeScreenshot="cd81e36f9d2f0f39eb66518767adcc95" Selector="&lt;wnd app='winword.exe' title='*{{WindowFilename}}*' /&gt;" TimeoutMS="[TimeoutShort]" WaitForReady="INTERACTIVE" />
+                                                        </ui:SendHotkey.Target>
+                                                      </ui:SendHotkey>
+                                                    </TryCatch.Finally>
+                                                  </TryCatch>
+                                                </If.Then>
+                                              </If>
+                                            </Sequence>
+                                          </If.Else>
+                                        </If>
+                                      </If.Then>
+                                      <If.Else>
+                                        <ui:LogMessage DisplayName="Log Message No Map Found" sap:VirtualizedContainerService.HintSize="314,91" sap2010:WorkflowViewState.IdRef="LogMessage_8" Level="Warn" Message="[&quot;No value for  &quot; + Pair.Key + &quot; was found&quot;]" />
+                                      </If.Else>
+                                    </If>
+                                  </Sequence>
+                                </TryCatch.Try>
+                                <TryCatch.Catches>
+                                  <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="1779,21" sap2010:WorkflowViewState.IdRef="Catch`1_5">
+                                    <sap:WorkflowViewStateService.ViewState>
+                                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                        <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                      </scg:Dictionary>
+                                    </sap:WorkflowViewStateService.ViewState>
+                                    <ActivityAction x:TypeArguments="s:Exception">
+                                      <ActivityAction.Argument>
+                                        <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+                                      </ActivityAction.Argument>
+                                      <ui:LogMessage DisplayName="Log Message Write Value" sap:VirtualizedContainerService.HintSize="314,91" sap2010:WorkflowViewState.IdRef="LogMessage_9" Level="Warn" Message="[&quot;Couldn't write protocol value from key &quot; + Pair.Key + &quot; du to &quot; + exception.Message + &quot; at source &quot; + exception.Source]" />
+                                    </ActivityAction>
+                                  </Catch>
+                                </TryCatch.Catches>
+                              </TryCatch>
+                            </ActivityAction>
+                          </ui:ForEach.Body>
+                        </ui:ForEach>
+                        <Sequence DisplayName="Move To End Of Protocol And Write Appendix" sap:VirtualizedContainerService.HintSize="2029,505" sap2010:WorkflowViewState.IdRef="Sequence_17">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <TryCatch DisplayName="Try Catch" sap:VirtualizedContainerService.HintSize="418,381" sap2010:WorkflowViewState.IdRef="TryCatch_6">
+                            <TryCatch.Try>
+                              <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DisplayName="Send CTRL+Enter Hotkey 'WINWORD.EXE Skolskjuts'" sap:VirtualizedContainerService.HintSize="314,154" sap2010:WorkflowViewState.IdRef="SendHotkey_14" Key="end" KeyModifiers="None" SpecialKey="True">
+                                <ui:SendHotkey.Target>
+                                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="95f9a857-9829-448f-b32d-d4d0f96f606b" InformativeScreenshot="e7d9f25aa287712589181f5a75875095" Selector="&lt;wnd app='winword.exe' title='*{{WindowFilename}}*' /&gt;" WaitForReady="INTERACTIVE">
+                                    <ui:Target.TimeoutMS>
+                                      <InArgument x:TypeArguments="x:Int32" />
+                                    </ui:Target.TimeoutMS>
+                                  </ui:Target>
+                                </ui:SendHotkey.Target>
+                              </ui:SendHotkey>
+                            </TryCatch.Try>
+                            <TryCatch.Catches>
+                              <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="404,21" sap2010:WorkflowViewState.IdRef="Catch`1_6">
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                    <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                                <ActivityAction x:TypeArguments="s:Exception">
+                                  <ActivityAction.Argument>
+                                    <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+                                  </ActivityAction.Argument>
+                                  <ui:LogMessage DisplayName="Log Message PGDOWN" sap:VirtualizedContainerService.HintSize="314,91" sap2010:WorkflowViewState.IdRef="LogMessage_10" Level="Trace" Message="[&quot;Failed to press PGDOWN in word due to &quot; + exception.Message + &quot; at source &quot; + exception.Source]" />
+                                </ActivityAction>
+                              </Catch>
+                            </TryCatch.Catches>
+                          </TryCatch>
+                        </Sequence>
+                        <p:WordReadText DisplayName="Read Text From Protocol" sap:VirtualizedContainerService.HintSize="2029,84" sap2010:WorkflowViewState.IdRef="WordReadText_1" Text="[WordDocumentText]" />
+                        <ui:Matches DisplayName="Find Placeholders Left in Protocol" sap:VirtualizedContainerService.HintSize="2029,59" sap2010:WorkflowViewState.IdRef="Matches_1" Input="[WordDocumentText]" IsBuilderTabModified="False" Pattern="[PlaceholderRegEx]" RegexOption="IgnoreCase, Multiline, Compiled" Result="[PlaceHoldersLeft]" />
+                        <TryCatch DisplayName="Try Catch" sap:VirtualizedContainerService.HintSize="2029,381" sap2010:WorkflowViewState.IdRef="TryCatch_7">
+                          <TryCatch.Try>
+                            <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DisplayName="Send CTRL+HOME Hotkey 'WINWORD.EXE Skolskjuts'" sap:VirtualizedContainerService.HintSize="314,154" sap2010:WorkflowViewState.IdRef="SendHotkey_15" Key="home" KeyModifiers="Ctrl" SpecialKey="True">
+                              <ui:SendHotkey.Target>
+                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="95f9a857-9829-448f-b32d-d4d0f96f606b" InformativeScreenshot="e7d9f25aa287712589181f5a75875095" Selector="&lt;wnd app='winword.exe' title='*{{WindowFilename}}*' /&gt;" WaitForReady="INTERACTIVE">
+                                  <ui:Target.TimeoutMS>
+                                    <InArgument x:TypeArguments="x:Int32" />
+                                  </ui:Target.TimeoutMS>
+                                </ui:Target>
+                              </ui:SendHotkey.Target>
+                            </ui:SendHotkey>
+                          </TryCatch.Try>
+                          <TryCatch.Catches>
+                            <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="404,21" sap2010:WorkflowViewState.IdRef="Catch`1_7">
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                              <ActivityAction x:TypeArguments="s:Exception">
+                                <ActivityAction.Argument>
+                                  <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+                                </ActivityAction.Argument>
+                                <ui:LogMessage DisplayName="Log Message PGDOWN" sap:VirtualizedContainerService.HintSize="314,91" sap2010:WorkflowViewState.IdRef="LogMessage_11" Level="Trace" Message="[&quot;Failed to press PGDOWN in word due to &quot; + exception.Message + &quot; at source &quot; + exception.Source]" />
+                              </ActivityAction>
+                            </Catch>
+                          </TryCatch.Catches>
+                        </TryCatch>
+                        <ui:ForEach x:TypeArguments="str:Match" CurrentIndex="[index]" DisplayName="For Each Placeholder Left in Protocol" sap:VirtualizedContainerService.HintSize="2029,962" sap2010:WorkflowViewState.IdRef="ForEach`1_3" Values="[PlaceHoldersLeft]">
+                          <ui:ForEach.Body>
+                            <ActivityAction x:TypeArguments="str:Match">
+                              <ActivityAction.Argument>
+                                <DelegateInArgument x:TypeArguments="str:Match" Name="Placeholder" />
+                              </ActivityAction.Argument>
+                              <Sequence DisplayName="Go Down And Replace Placeholder" sap:VirtualizedContainerService.HintSize="565,829" sap2010:WorkflowViewState.IdRef="Sequence_18">
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                                <If Condition="[index Mod 15 = 0 AND index &gt; 0]" DisplayName="If Index Can Dide Evenly With 20" sap:VirtualizedContainerService.HintSize="543,528" sap2010:WorkflowViewState.IdRef="If_13">
+                                  <If.Then>
+                                    <TryCatch DisplayName="Try Catch" sap:VirtualizedContainerService.HintSize="418,381" sap2010:WorkflowViewState.IdRef="TryCatch_8">
+                                      <TryCatch.Try>
+                                        <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DisplayName="Send PGDOWN Hotkey 'WINWORD.EXE Skolskjuts'" sap:VirtualizedContainerService.HintSize="314,154" sap2010:WorkflowViewState.IdRef="SendHotkey_16" Key="pgdn" KeyModifiers="None" SpecialKey="True">
+                                          <ui:SendHotkey.Target>
+                                            <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="95f9a857-9829-448f-b32d-d4d0f96f606b" InformativeScreenshot="e7d9f25aa287712589181f5a75875095" Selector="&lt;wnd app='winword.exe' title='*{{WindowFilename}}*' /&gt;" WaitForReady="INTERACTIVE">
+                                              <ui:Target.TimeoutMS>
+                                                <InArgument x:TypeArguments="x:Int32" />
+                                              </ui:Target.TimeoutMS>
+                                            </ui:Target>
+                                          </ui:SendHotkey.Target>
+                                        </ui:SendHotkey>
+                                      </TryCatch.Try>
+                                      <TryCatch.Catches>
+                                        <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="404,21" sap2010:WorkflowViewState.IdRef="Catch`1_8">
+                                          <sap:WorkflowViewStateService.ViewState>
+                                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                              <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                            </scg:Dictionary>
+                                          </sap:WorkflowViewStateService.ViewState>
+                                          <ActivityAction x:TypeArguments="s:Exception">
+                                            <ActivityAction.Argument>
+                                              <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+                                            </ActivityAction.Argument>
+                                            <ui:LogMessage DisplayName="Log Message PGDOWN" sap:VirtualizedContainerService.HintSize="314,91" sap2010:WorkflowViewState.IdRef="LogMessage_12" Level="Trace" Message="[&quot;Failed to press PGDOWN in word due to &quot; + exception.Message + &quot; at source &quot; + exception.Source]" />
+                                          </ActivityAction>
+                                        </Catch>
+                                      </TryCatch.Catches>
+                                    </TryCatch>
+                                  </If.Then>
+                                </If>
+                                <p:WordReplaceText Found="{x:Null}" DisplayName="Replace Key In Protocol With Value In Dictionary" sap:VirtualizedContainerService.HintSize="543,137" sap2010:WorkflowViewState.IdRef="WordReplaceText_4" Replace="[TextToReplacePlaceholder]" Search="[Placeholder.Value]" />
+                              </Sequence>
+                            </ActivityAction>
+                          </ui:ForEach.Body>
+                        </ui:ForEach>
+                        <TryCatch DisplayName="Try Catch" sap:VirtualizedContainerService.HintSize="2029,381" sap2010:WorkflowViewState.IdRef="TryCatch_9">
+                          <TryCatch.Try>
+                            <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DisplayName="Send CTRL+END Hotkey 'WINWORD.EXE Skolskjuts'" sap:VirtualizedContainerService.HintSize="314,154" sap2010:WorkflowViewState.IdRef="SendHotkey_17" Key="end" KeyModifiers="Ctrl" SpecialKey="True">
+                              <ui:SendHotkey.Target>
+                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="95f9a857-9829-448f-b32d-d4d0f96f606b" InformativeScreenshot="e7d9f25aa287712589181f5a75875095" Selector="&lt;wnd app='winword.exe' title='*{{WindowFilename}}*' /&gt;" WaitForReady="INTERACTIVE">
+                                  <ui:Target.TimeoutMS>
+                                    <InArgument x:TypeArguments="x:Int32" />
+                                  </ui:Target.TimeoutMS>
+                                </ui:Target>
+                              </ui:SendHotkey.Target>
+                            </ui:SendHotkey>
+                          </TryCatch.Try>
+                          <TryCatch.Catches>
+                            <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="404,21" sap2010:WorkflowViewState.IdRef="Catch`1_9">
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                              <ActivityAction x:TypeArguments="s:Exception">
+                                <ActivityAction.Argument>
+                                  <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+                                </ActivityAction.Argument>
+                                <ui:LogMessage DisplayName="Log Message PGDOWN" sap:VirtualizedContainerService.HintSize="314,91" sap2010:WorkflowViewState.IdRef="LogMessage_13" Level="Trace" Message="[&quot;Failed to press PGDOWN in word due to &quot; + exception.Message + &quot; at source &quot; + exception.Source]" />
+                              </ActivityAction>
+                            </Catch>
+                          </TryCatch.Catches>
+                        </TryCatch>
+                        <p:WordExportToPdf DisplayName="Export To PDF" FilePath="[out_ProtocolPDFCopyFilePath]" sap:VirtualizedContainerService.HintSize="2029,84" sap2010:WorkflowViewState.IdRef="WordExportToPdf_1" />
+                      </Sequence>
+                    </ActivityAction>
+                  </p:WordApplicationScope.Body>
+                </p:WordApplicationScope>
+              </TryCatch.Try>
+              <TryCatch.Catches>
+                <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="2069,21" sap2010:WorkflowViewState.IdRef="Catch`1_11">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <ActivityAction x:TypeArguments="s:Exception">
+                    <ActivityAction.Argument>
+                      <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+                    </ActivityAction.Argument>
+                    <Sequence DisplayName="Log Throw" sap:VirtualizedContainerService.HintSize="538,1051" sap2010:WorkflowViewState.IdRef="Sequence_21">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                      <Assign sap:VirtualizedContainerService.HintSize="456,60" sap2010:WorkflowViewState.IdRef="Assign_10">
+                        <Assign.To>
+                          <OutArgument x:TypeArguments="x:Int32">[RetryCount]</OutArgument>
+                        </Assign.To>
+                        <Assign.Value>
+                          <InArgument x:TypeArguments="x:Int32">[RetryCount + 1]</InArgument>
+                        </Assign.Value>
+                      </Assign>
+                      <ui:LogMessage DisplayName="Log Message Removing" sap:VirtualizedContainerService.HintSize="456,91" sap2010:WorkflowViewState.IdRef="LogMessage_14" Level="Error" Message="[&quot;Exception while writing protocol due to &quot; + exception.Message + &quot; at source &quot; + exception.Source + &quot;. Retrying (&quot; + RetryCount.ToString + &quot;/3)&quot;]" />
+                      <ui:KillProcess ContinueOnError="{x:Null}" Process="{x:Null}" DisplayName="Kill WINWORD Process" sap:VirtualizedContainerService.HintSize="456,22" sap2010:WorkflowViewState.IdRef="KillProcess_1" ProcessName="winword" />
+                      <ui:Delete ContinueOnError="{x:Null}" sap:VirtualizedContainerService.HintSize="456,22" sap2010:WorkflowViewState.IdRef="Delete_1" Path="[ProtocolCopyFilePath]" />
+                      <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="456,51" sap2010:WorkflowViewState.IdRef="CommentOut_3">
+                        <ui:CommentOut.Body>
+                          <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="440,473" sap2010:WorkflowViewState.IdRef="Sequence_20">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <TryCatch DisplayName="Try Catch Delete" sap:VirtualizedContainerService.HintSize="418,287" sap2010:WorkflowViewState.IdRef="TryCatch_10">
+                              <TryCatch.Try>
+                                <ui:Delete ContinueOnError="{x:Null}" sap:VirtualizedContainerService.HintSize="200,22" sap2010:WorkflowViewState.IdRef="Delete_2" Path="[ProtocolCopyFilePath]" />
+                              </TryCatch.Try>
+                              <TryCatch.Catches>
+                                <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="404,21" sap2010:WorkflowViewState.IdRef="Catch`1_10">
+                                  <sap:WorkflowViewStateService.ViewState>
+                                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                    </scg:Dictionary>
+                                  </sap:WorkflowViewStateService.ViewState>
+                                  <ActivityAction x:TypeArguments="s:Exception">
+                                    <ActivityAction.Argument>
+                                      <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+                                    </ActivityAction.Argument>
+                                    <ui:LogMessage DisplayName="Log Message Deletion Failed" sap:VirtualizedContainerService.HintSize="314,91" sap2010:WorkflowViewState.IdRef="LogMessage_15" Level="Warn" Message="[&quot;Couldn't delete temporary Word protocol document (&quot; + ProtocolCopyFilePath + &quot;)&quot;]" />
+                                  </ActivityAction>
+                                </Catch>
+                              </TryCatch.Catches>
+                            </TryCatch>
+                            <Rethrow sap:VirtualizedContainerService.HintSize="418,22" sap2010:WorkflowViewState.IdRef="Rethrow_2" />
+                          </Sequence>
+                        </ui:CommentOut.Body>
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                      </ui:CommentOut>
+                      <Rethrow sap:VirtualizedContainerService.HintSize="456,22" sap2010:WorkflowViewState.IdRef="Rethrow_3" />
+                    </Sequence>
+                  </ActivityAction>
+                </Catch>
+              </TryCatch.Catches>
+            </TryCatch>
+          </Sequence>
+        </ActivityAction>
+      </ui:RetryScope.ActivityBody>
+      <ui:RetryScope.Condition>
+        <ActivityFunc x:TypeArguments="x:Boolean" />
+      </ui:RetryScope.Condition>
+    </ui:RetryScope>
+    <TryCatch DisplayName="Try Catch Delete" sap:VirtualizedContainerService.HintSize="2127,287" sap2010:WorkflowViewState.IdRef="TryCatch_12">
+      <TryCatch.Try>
+        <ui:Delete ContinueOnError="{x:Null}" sap:VirtualizedContainerService.HintSize="200,22" sap2010:WorkflowViewState.IdRef="Delete_3" Path="[ProtocolCopyFilePath]" />
+      </TryCatch.Try>
+      <TryCatch.Catches>
+        <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="404,21" sap2010:WorkflowViewState.IdRef="Catch`1_12">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <ActivityAction x:TypeArguments="s:Exception">
+            <ActivityAction.Argument>
+              <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+            </ActivityAction.Argument>
+            <ui:LogMessage DisplayName="Log Message Deletion Failed" sap:VirtualizedContainerService.HintSize="314,91" sap2010:WorkflowViewState.IdRef="LogMessage_16" Level="Warn" Message="[&quot;Couldn't delete temporary Word protocol document (&quot; + ProtocolCopyFilePath + &quot;)&quot;]" />
+          </ActivityAction>
+        </Catch>
+      </TryCatch.Catches>
+    </TryCatch>
+    <ui:LogMessage DisplayName="Log Message PDF protocol" sap:VirtualizedContainerService.HintSize="2127,91" sap2010:WorkflowViewState.IdRef="LogMessage_17" Level="Info" Message="[&quot;Created PDF protocol file (&quot; + out_ProtocolPDFCopyFilePath + &quot;)&quot;]" />
+  </Sequence>
+</Activity>

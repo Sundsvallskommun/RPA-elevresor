@@ -1,0 +1,229 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="GetPriorDecision" this:GetPriorDecision.in_ChildCitizenID12CharsAndWOHypen="YYYYMMDDXXXX" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:maes="clr-namespace:Microsoft.Activities.Extensions.Statements;assembly=Microsoft.Activities.Extensions" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:this="clr-namespace:" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property Name="in_Config" Type="InArgument(scg:Dictionary(x:String, x:Object))" />
+    <x:Property Name="io_Protocol" Type="InOutArgument(scg:Dictionary(x:String, x:String))" />
+    <x:Property Name="out_CheckPriorDecision" Type="OutArgument(x:Boolean)" />
+    <x:Property Name="in_ChildCitizenID12CharsAndWOHypen" Type="InArgument(x:String)" />
+    <x:Property Name="out_PriorDecisionValidToDate" Type="OutArgument(s:DateTime)" />
+  </x:Members>
+  <this:GetPriorDecision.in_Config>
+    <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" />
+  </this:GetPriorDecision.in_Config>
+  <sap:VirtualizedContainerService.HintSize>882,2102</sap:VirtualizedContainerService.HintSize>
+  <sap2010:WorkflowViewState.IdRef>ActivityBuilder_1</sap2010:WorkflowViewState.IdRef>
+  <TextExpression.NamespacesForImplementation>
+    <scg:List x:TypeArguments="x:String" Capacity="32">
+      <x:String>System</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Activities</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Diagnostics</x:String>
+      <x:String>System.Drawing</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Xml</x:String>
+      <x:String>System.Xml.Linq</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Net.Mail</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System.Globalization</x:String>
+    </scg:List>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="32">
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System.DataSetExtensions</AssemblyReference>
+      <AssemblyReference>System.Drawing</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities.Design</AssemblyReference>
+      <AssemblyReference>System.ValueTuple</AssemblyReference>
+      <AssemblyReference>System.ServiceModel</AssemblyReference>
+      <AssemblyReference>UiPath.Mail</AssemblyReference>
+      <AssemblyReference>UiPath.CV</AssemblyReference>
+      <AssemblyReference>UiPath.Excel</AssemblyReference>
+      <AssemblyReference>UiPath.Word</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.Composition</AssemblyReference>
+      <AssemblyReference>System.Runtime.WindowsRuntime</AssemblyReference>
+    </scg:List>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence sap2010:Annotation.AnnotationText="Search E-service for prior decision on child. Add to protocol.&#xA;&#xA;Pre Condition: E-service open with cases showing.&#xA;Post Condition: Info on most recent prior decision added to protocol dictionary." DisplayName="GetMostRecentPriorDecision" sap:VirtualizedContainerService.HintSize="842,2022" sap2010:WorkflowViewState.IdRef="Sequence_6">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:String" Name="ChildCitizenIDWith10CharsAndHyphen" />
+      <Variable x:TypeArguments="x:String" Default="Inget tidigare beslut hittades i e-tjänsten. " Name="PriorDecisionText" />
+      <Variable x:TypeArguments="x:Boolean" Name="FoundSchool" />
+      <Variable x:TypeArguments="x:Boolean" Name="ConvertSuccess" />
+      <Variable x:TypeArguments="x:Boolean" Name="PriorDecisionFoundInEservice" />
+      <Variable x:TypeArguments="s:DateTime" Name="PriorDecisionEServiceValidToDate" />
+      <Variable x:TypeArguments="x:String" Name="PriorDecisionEServiceCertificate" />
+      <Variable x:TypeArguments="x:String" Name="PriorDecisionEServiceSchool" />
+      <Variable x:TypeArguments="x:String" Name="PriorDecisionEServiceComment" />
+      <Variable x:TypeArguments="x:String" Name="PriorDecisionEServiceDecision" />
+      <Variable x:TypeArguments="s:DateTime" Name="PriorDecisionEServiceDate" />
+      <Variable x:TypeArguments="x:String" Name="PriorDecisionEServiceCaseID" />
+      <Variable x:TypeArguments="x:String" Name="BuscardNumber" />
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <ui:LogMessage DisplayName="Log Message Most Recent Prior Decision" sap:VirtualizedContainerService.HintSize="820,91" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;Searching for most recent prior decision&quot;]" />
+    <Assign DisplayName="Assign False To Check" sap:VirtualizedContainerService.HintSize="820,60" sap2010:WorkflowViewState.IdRef="Assign_1">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:Boolean">[out_CheckPriorDecision]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:Boolean">False</InArgument>
+      </Assign.Value>
+    </Assign>
+    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke GetPriorDecisionFromEService workflow" sap:VirtualizedContainerService.HintSize="820,87" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="PriorDecision\GetPriorDecisionFromEService.xaml">
+      <ui:InvokeWorkflowFile.Arguments>
+        <OutArgument x:TypeArguments="s:DateTime" x:Key="out_PriorDecisionEServiceDate">[PriorDecisionEServiceDate]</OutArgument>
+        <OutArgument x:TypeArguments="x:String" x:Key="out_PriorDecisionEServiceDecision">[PriorDecisionEServiceDecision]</OutArgument>
+        <OutArgument x:TypeArguments="x:String" x:Key="out_PriorDecisionEServiceComment">[PriorDecisionEServiceComment]</OutArgument>
+        <OutArgument x:TypeArguments="x:String" x:Key="out_PriorDecisionEServiceSchool">[PriorDecisionEServiceSchool]</OutArgument>
+        <OutArgument x:TypeArguments="x:String" x:Key="out_PriorDecisionEServiceCertificate">[PriorDecisionEServiceCertificate]</OutArgument>
+        <OutArgument x:TypeArguments="s:DateTime" x:Key="out_PriorDecisionEServiceValidToDate">[PriorDecisionEServiceValidToDate]</OutArgument>
+        <OutArgument x:TypeArguments="x:Boolean" x:Key="out_PriorDecisionFound">[PriorDecisionFoundInEservice]</OutArgument>
+        <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">[in_Config]</InArgument>
+        <OutArgument x:TypeArguments="x:String" x:Key="out_PriorDecisionEServiceCaseID">[PriorDecisionEServiceCaseID]</OutArgument>
+        <InArgument x:TypeArguments="x:String" x:Key="in_SSN">[in_ChildCitizenID12CharsAndWOHypen]</InArgument>
+        <OutArgument x:TypeArguments="x:String" x:Key="out_BuscardNumber">[BuscardNumber]</OutArgument>
+      </ui:InvokeWorkflowFile.Arguments>
+    </ui:InvokeWorkflowFile>
+    <If Condition="[PriorDecisionFoundInEservice]" DisplayName="If Decision Was Found In E-Service" sap:VirtualizedContainerService.HintSize="820,932" sap2010:WorkflowViewState.IdRef="If_5">
+      <If.Then>
+        <Sequence DisplayName="Assign Info Text And Prior Decision Check" sap:VirtualizedContainerService.HintSize="531,784" sap2010:WorkflowViewState.IdRef="Sequence_2">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <Assign DisplayName="Assign Outgoing Valid To Date" sap:VirtualizedContainerService.HintSize="509,60" sap2010:WorkflowViewState.IdRef="Assign_4">
+            <Assign.To>
+              <OutArgument x:TypeArguments="s:DateTime">[out_PriorDecisionValidToDate]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="s:DateTime">[PriorDecisionEServiceValidToDate]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="Assign Prior Decision Info" sap:VirtualizedContainerService.HintSize="509,64" sap2010:WorkflowViewState.IdRef="Assign_5">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[PriorDecisionText]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String" xml:space="preserve">[If(PriorDecisionEServiceDate &gt; New DateTime, "Det senaste funna beslutet gällande nu sökande elev hittades i e-tjänsten (ärendenummer: " + PriorDecisionEServiceCaseID + ") och var taget " + PriorDecisionEServiceDate.ToString("d", CultureInfo.CreateSpecificCulture("sv-SE")), "Det senaste funna beslutet gällande nu sökande elev hittades i e-tjänsten (ärendenummer: " + PriorDecisionEServiceCaseID) +
+" och gällde skjuts till " + PriorDecisionEServiceSchool + ". " + 
+If(Not String.IsNullOrEmpty(PriorDecisionEServiceDecision.Trim), "Senaste beslutet var: " + PriorDecisionEServiceDecision, "INGET beslut funnet för nu sökande elev.") +
+If(PriorDecisionEServiceDecision.ToLower.Contains("eleven har rätt till elevresa med busskort - busskort kommer med posten."), If(PriorDecisionEServiceValidToDate &gt; New DateTime, If (PriorDecisionEServiceValidToDate &gt; DateTime.Today, " Beslutet är giltigt till och med ", " Beslutet var giltigt till och med ") + PriorDecisionEServiceValidToDate.ToString("d", CultureInfo.CreateSpecificCulture("sv-SE")) + ". " , " Något slutdatum för elevresan kunde inte hittas. "), "") +
+If(String.IsNullOrEmpty(BuscardNumber), " Inget busskortsnummer hittades i E-tjänsten."," Busskortsnummer angivet i E-tjänsten är: " + BuscardNumber)]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <If Condition="[Not String.IsNullOrEmpty(PriorDecisionEServiceComment)]" DisplayName="If Any Comment" sap:VirtualizedContainerService.HintSize="509,208" sap2010:WorkflowViewState.IdRef="If_1">
+            <If.Then>
+              <Assign DisplayName="Concat Prior Decision With Comment" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_6">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:String">[PriorDecisionText]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:String">[PriorDecisionText + "^p^pKommentar på beslutet: " + PriorDecisionEServiceComment]</InArgument>
+                </Assign.Value>
+              </Assign>
+            </If.Then>
+          </If>
+          <If Condition="[PriorDecisionEServiceDecision.ToLower.Contains(&quot;eleven har inte rätt till elevresa&quot;)]" DisplayName="If Transport Is Not Granted" sap:VirtualizedContainerService.HintSize="509,208" sap2010:WorkflowViewState.IdRef="If_3">
+            <If.Then>
+              <Assign DisplayName="Assign False To Check" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_9">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Boolean">[out_CheckPriorDecision]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Boolean">False</InArgument>
+                </Assign.Value>
+              </Assign>
+            </If.Then>
+            <If.Else>
+              <Assign DisplayName="Assign True To Check" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_8">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Boolean">[out_CheckPriorDecision]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Boolean">True</InArgument>
+                </Assign.Value>
+              </Assign>
+            </If.Else>
+          </If>
+        </Sequence>
+      </If.Then>
+      <If.Else>
+        <Sequence DisplayName="Set Check and Text" sap:VirtualizedContainerService.HintSize="264,384" sap2010:WorkflowViewState.IdRef="Sequence_5">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <Assign DisplayName="Assign False To Check" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_15">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Boolean">[out_CheckPriorDecision]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Boolean">False</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="Assign Nothing" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_17">
+            <Assign.To>
+              <OutArgument x:TypeArguments="s:DateTime">[out_PriorDecisionValidToDate]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="s:DateTime">[Nothing]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="Assign Prior Decision Info" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_16">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[PriorDecisionText]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">["Inget tidigare beslut hittades i e-tjänsten. "]</InArgument>
+            </Assign.Value>
+          </Assign>
+        </Sequence>
+      </If.Else>
+    </If>
+    <TryCatch DisplayName="Try Catch PriorDecision" sap:VirtualizedContainerService.HintSize="820,365" sap2010:WorkflowViewState.IdRef="TryCatch_1">
+      <TryCatch.Try>
+        <maes:AddToDictionary x:TypeArguments="x:String, x:String" Dictionary="[io_Protocol]" DisplayName="Add PriorDecision to Protocol dictionary" sap:VirtualizedContainerService.HintSize="378,138" sap2010:WorkflowViewState.IdRef="AddToDictionary`2_1" Key="%[PriorDecision]" Value="[PriorDecisionText]" />
+      </TryCatch.Try>
+      <TryCatch.Catches>
+        <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="404,21" sap2010:WorkflowViewState.IdRef="Catch`1_1">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <ActivityAction x:TypeArguments="s:Exception">
+            <ActivityAction.Argument>
+              <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+            </ActivityAction.Argument>
+            <ui:LogMessage DisplayName="Log Message PriorDecision" sap:VirtualizedContainerService.HintSize="314,91" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="Warn" Message="[&quot;Couldn't add info on PriorDecision, due to &quot; + exception.Message + &quot;, at source: &quot; + exception.Source]" />
+          </ActivityAction>
+        </Catch>
+      </TryCatch.Catches>
+    </TryCatch>
+    <ui:LogMessage DisplayName="Log Message Prior Decision" sap:VirtualizedContainerService.HintSize="820,91" sap2010:WorkflowViewState.IdRef="LogMessage_3" Level="Info" Message="[&quot;Searched for a prior decision&quot;]" />
+  </Sequence>
+</Activity>
